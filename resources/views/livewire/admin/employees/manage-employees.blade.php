@@ -31,34 +31,110 @@
                 <div class="space-y-6">
                     <div>
                         <flux:heading size="lg">Add New Employee</flux:heading>
-                        <flux:text class="mt-2 text-gray-600">Employee will be assigned a unique Staff ID automatically
-                        </flux:text>
+                        <flux:text class="mt-2 text-gray-600 dark:text-gray-400">Assign employment details to an
+                            existing user</flux:text>
                         <x-action-message class="me-3" on="employee-added" />
                     </div>
 
                     <form wire:submit.prevent="saveEmployee">
+                        <!-- User Search/Select Field -->
+                        <div class="mb-6" x-data="{ open: false }">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select
+                                User</label>
+                            <div class="relative">
+                                <div class="flex items-center">
+                                    <flux:input type="text" wire:model.live="userSearch" x-on:focus="open = true"
+                                        x-on:click.away="open = false" placeholder="Search users by name or email..."
+                                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                                    <button type="button" class="ml-2 p-2 text-gray-400 hover:text-gray-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <!-- Dropdown Results -->
+                                <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="transform opacity-0 scale-95"
+                                    x-transition:enter-end="transform opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="transform opacity-100 scale-100"
+                                    x-transition:leave-end="transform opacity-0 scale-95"
+                                    class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto max-h-60 focus:outline-none sm:text-sm">
+                                    <template x-if="!$wire.users.length">
+                                        <div class="px-4 py-2 text-gray-500 dark:text-gray-400">
+                                            No users found
+                                        </div>
+                                    </template>
+                                    <template x-for="user in $wire.users" :key="user.id">
+                                        <button type="button" x-on:click="$wire.selectUser(user); open = false"
+                                            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center">
+                                            <img :src="user.avatar_url || 'https://ui-avatars.com/api/?name='+encodeURIComponent(user.name)+'&background=random'"
+                                                class="h-8 w-8 rounded-full mr-3" :alt="user.name">
+                                            <div>
+                                                <div x-text="user.name"
+                                                    class="font-medium text-gray-900 dark:text-white"></div>
+                                                <div x-text="user.email"
+                                                    class="text-sm text-gray-500 dark:text-gray-400"></div>
+                                            </div>
+                                        </button>
+                                    </template>
+                                </div>
+                            </div><!-- Selected User Display -->
+                            <template x-if="$wire.selectedUser">
+                                <div class="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-md flex items-center">
+                                    <img :src="$wire.selectedUser.avatar_url || 'https://ui-avatars.com/api/?name='+encodeURIComponent($wire.selectedUser.name)+'&background=random'"
+                                        class="h-10 w-10 rounded-full mr-3" :alt="$wire.selectedUser.name">
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white"
+                                            x-text="$wire.selectedUser.name"></div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400"
+                                            x-text="$wire.selectedUser.email"></div>
+                                    </div>
+                                    <button type="button" x-on:click="$wire.resetUserSelection()"
+                                        class="ml-auto text-red-500 hover:text-red-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Staff ID Field -->
+                        <!-- Staff ID Field -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Staff
+                                ID</label>
+                            <div class="relative">
+                                <flux:input type="text" wire:model="staff_id"
+                                    class="block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
+                                    readonly disabled />
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Automatically generated 4-digit ID
+                            </p>
+                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Left Column - Basic Information -->
                             <div class="space-y-4">
                                 <!-- Non-editable Staff ID Field -->
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Staff
-                                        ID</label>
-                                    <div class="relative">
-                                        <input type="text" wire:model="staff_id"
-                                            class="block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
-                                            readonly disabled>
-                                        <div
-                                            class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <p class="mt-1 text-sm text-gray-500">Automatically generated 4-digit ID</p>
-                                </div>
+
+                                <flux:select label="User" wire:model="position_id" class="w-full" icon="briefcase">
+                                    <option value="">Select Position</option>
+                                    @foreach ($positions as $position)
+                                        <option value="{{ $position->id }}">{{ $position->title }}</option>
+                                    @endforeach
+                                </flux:select>
 
                                 <flux:input label="Full Name" wire:model="name" placeholder="John Doe" class="w-full"
                                     icon="user" required />

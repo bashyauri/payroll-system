@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Employees;
 
 use Carbon\Carbon;
+use App\Models\User;
 use Livewire\Component;
 use App\Models\Employee;
 use App\Models\Position;
@@ -23,6 +24,9 @@ class ManageEmployees extends Component
     public $account_number;
     public $hire_date;
     public $departments = [];
+    public $userSearch = '';
+    public $selectedUser = null;
+    public $users = [];
     public string $sortBy = 'name'; // default sorting field
     public string $sortDirection = 'asc';
     public $search = '';
@@ -47,6 +51,32 @@ class ManageEmployees extends Component
         $this->departments = Department::all();
         $this->positions = Position::all();
         $this->generateStaffId();
+    }
+    public function updatedUserSearch()
+    {
+        if (strlen($this->userSearch) > 2) {
+            $this->users = User::query()
+                ->where('name', 'like', '%' . $this->userSearch . '%')
+                ->orWhere('email', 'like', '%' . $this->userSearch . '%')
+                ->limit(10)
+                ->get()
+                ->toArray();
+        } else {
+            $this->users = [];
+        }
+    }
+    public function selectUser($user)
+    {
+        $this->selectedUser = $user;
+        $this->userSearch = '';
+        $this->users = [];
+    }
+
+    public function resetUserSelection()
+    {
+        $this->selectedUser = null;
+        $this->userSearch = '';
+        $this->users = [];
     }
     public function updatingSearch()
     {

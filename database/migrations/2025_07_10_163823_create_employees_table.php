@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('position_id')->nullable()->constrained()->onDelete('set null');
             $table->string('level')->nullable();
             $table->string('step')->nullable();
-            $table->string('bank_name')->nullable();
+            $table->foreignId('bank_id')->nullable()->constrained('banks')->onDelete('set null');
             $table->string('account_number')->nullable();
             $table->date('hire_date')->nullable();
             $table->softDeletes();

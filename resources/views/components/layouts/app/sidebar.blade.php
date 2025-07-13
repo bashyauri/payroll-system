@@ -19,8 +19,12 @@
                     wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
             </flux:navlist.group>
             <flux:navlist.group :heading="__('Settings')" class="grid">
-                <flux:navlist.item icon="user" :href="route('admin.users')" :current="request()->routeIs('admin.users')"
-                    wire:navigate>{{ __('Users') }}
+                <flux:navlist.item icon="users" :href="route('admin.users')"
+                    :current="request()->routeIs('admin.users')" wire:navigate>{{ __('Users') }}
+                </flux:navlist.item>
+                <flux:navlist.item icon="contact-round" :href="route('admin.employees')"
+                    :current="request()->routeIs('admin.employees')" wire:navigate>
+                    {{ __('Employees') }}
                 </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>

@@ -118,7 +118,7 @@ class ManageUsers extends Component
             $this->dispatch('user-added', name: $validated['name']);
             $this->reset();
             $this->modal('user-added')->close();
-        } catch (Error $e) {
+        } catch (\Exception $e) {
             Log::info("Error: " . $e->getMessage());
         }
     }

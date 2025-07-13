@@ -14,17 +14,16 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->string('staff_id')->unique();
-            $table->string('name');
-            $table->unsignedBigInteger('department_id');
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade'); // Link to users table (optional)
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('department_id')->constrained()->onDelete('cascade');
+            $table->foreignId('position_id')->nullable()->constrained()->onDelete('set null');
             $table->string('level')->nullable();
             $table->string('step')->nullable();
-            $table->decimal('basic_salary', 10, 2);
             $table->string('bank_name')->nullable();
             $table->string('account_number')->nullable();
+            $table->date('hire_date')->nullable();
+            $table->softDeletes();
             $table->timestamps();
-
-            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
         });
     }
 

@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             DepartmentSeeder::class,
+            BankSeeder::class,
+            PositionSeeder::class,
         ]);
 
         // Seed 10 Nigerian-style staff users and employees

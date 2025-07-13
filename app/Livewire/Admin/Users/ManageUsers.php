@@ -32,6 +32,7 @@ class ManageUsers extends Component
     public string $status = '';
     public ?User $editingUser = null;
     public ?User $userToDelete = null;
+    public $search = '';
 
 
 
@@ -43,7 +44,33 @@ class ManageUsers extends Component
     }
     public string $sortBy = 'name'; // default sorting field
     public string $sortDirection = 'asc'; // default sorting direction
+    public function updatingSearch()
+    {
 
+        $this->resetPage();
+    }
+    #[\Livewire\Attributes\Computed]
+    public function users()
+    {
+
+        return User::query()
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                        ->orWhere('email', 'like', '%' . $this->search . '%')
+                        ->orWhere('phone_number', 'like', '%' . $this->search . '%')
+                        ->orWhereHas('roles', function ($roleQuery) {
+                            $roleQuery->where('name', 'like', '%' . $this->search . '%');
+                        })
+                        ->orWhereHas('department', function ($deptQuery) {
+                            $deptQuery->where('name', 'like', '%' . $this->search . '%');
+                        });
+                });
+            })
+            ->with(['roles', 'department'])
+            ->orderBy($this->sortBy, $this->sortDirection)
+            ->paginate(10);
+    }
     public function sort($field)
     {
         if ($this->sortBy === $field) {

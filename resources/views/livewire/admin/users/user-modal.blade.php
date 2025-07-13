@@ -14,6 +14,7 @@
 
         </div>
 
+
         <!-- Success Message -->
         <x-action-message
             class="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-200 px-4 py-3 rounded-md"
@@ -93,10 +94,7 @@
                 <flux:button variant="ghost" class="cursor-pointer" type="button" @click="$wire.closeForm()">
                     Cancel
                 </flux:button>
-                {{-- <flux:button variant="ghost" type="button"
-                    x-on:click="$flux.modal('edit-user-'.$user->id).close()">
-                    Cancel
-                </flux:button> --}}
+
                 <div class="flex gap-3">
                     <flux:button variant="outline" type="button" @click="$wire.resetForm()">
                         Reset

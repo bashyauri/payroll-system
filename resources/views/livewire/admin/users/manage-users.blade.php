@@ -2,15 +2,31 @@
     <div class="flex items-center justify-between p-4">
         <flux:heading size="lg">User management</flux:heading>
 
-        <flux:modal.trigger name="add-user">
-            <flux:button variant="danger"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>Add User
-            </flux:button>
-        </flux:modal.trigger>
+        <div class="flex items-center gap-4">
+            <!-- Search Input -->
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <flux:input wire:model.live="search" placeholder="Search users..." class="pl-10 w-64" />
+            </div>
+
+            <flux:modal.trigger name="add-user">
+                <flux:button variant="danger"
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>Add User
+                </flux:button>
+            </flux:modal.trigger>
+        </div>
+
+        <!-- Rest of your existing modal code remains the same -->
 
         <flux:modal name="add-user" class="md:w-[800px]">
             <div class="space-y-6">

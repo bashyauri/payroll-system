@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('deduction_type_id')->constrained()->onDelete('cascade');
             $table->decimal('amount', 10, 2);
             $table->text('note')->nullable();
+            $table->unique(['employee_id', 'deduction_type_id']);
             $table->timestamps();
         });
     }

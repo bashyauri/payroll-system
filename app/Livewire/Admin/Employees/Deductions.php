@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\Deduction;
 use Livewire\WithPagination;
 use App\Models\DeductionType;
+use Illuminate\Validation\ValidationException;
 
 class Deductions extends Component
 {
@@ -106,6 +107,15 @@ class Deductions extends Component
             'note' => 'nullable|string',
         ]);
 
+        $exists = Deduction::where('employee_id', $this->selectedEmployee['id'])
+            ->where('deduction_type_id', $validated['deduction_type_id'])
+            ->exists();
+
+        if ($exists) {
+            throw ValidationException::withMessages([
+                'deduction_type_id' => 'This deduction has already been added for the employee.',
+            ]);
+        }
 
 
 

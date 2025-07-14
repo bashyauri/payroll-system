@@ -2,6 +2,23 @@
     <div class="flex items-center justify-between p-4">
         <flux:heading size="lg">Employee management</flux:heading>
 
+        <!-- Error Messages -->
+        @if($errors->any())
+            <div class="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-200 px-4 py-3 rounded-md">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <!-- Success Message -->
+        <x-action-message
+            class="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-200 px-4 py-3 rounded-md"
+            on="employee-added">
+            {{ __('Employee added successfully!') }}
+        </x-action-message>
 
         <div class="flex items-center gap-4">
             <!-- Search Input -->
@@ -131,20 +148,25 @@
                                 <!-- Non-editable Staff ID Field -->
 
 
-                                <flux:select label="Department" wire:model="department_id" class="w-full"
+                                <flux:select label="Department" wire:model.defer="department_id" class="w-full"
                                     icon="office-building" required>
                                     <option value="">Select Department</option>
                                     @foreach ($departments as $department)
                                         <option value="{{ $department->id }}">{{ $department->name }}</option>
                                     @endforeach
                                 </flux:select>
+                                @error('department_id') <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
 
-                                <flux:select label="Position" wire:model="position_id" class="w-full" icon="briefcase">
+                                <!-- Position -->
+                                <flux:select label="Position" wire:model.defer="position_id" class="w-full"
+                                    icon="briefcase" required>
                                     <option value="">Select Position</option>
                                     @foreach ($positions as $position)
                                         <option value="{{ $position->id }}">{{ $position->title }}</option>
                                     @endforeach
                                 </flux:select>
+                                @error('position_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
 
 
@@ -157,8 +179,10 @@
                                 <div class="grid grid-cols-2 gap-4">
                                     <flux:input type="number" label="Level" wire:model="level" placeholder="e.g. L4"
                                         class="w-full" />
+                                    @error('level') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                     <flux:input type="number" label="Step" wire:model="step" placeholder="e.g. S2"
                                         class="w-full" />
+                                    @error('step') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <flux:input label="Hire Date" wire:model="hire_date" type="date" class="w-full"
@@ -377,17 +401,17 @@
                                 <button type="button" wire:click="sort('status')"
                                     class="text-gray-400 hover:text-gray-500">
                                     @if($sortBy === 'status')
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M5 15l7-7 7 7" />
-                                    </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 15l7-7 7 7" />
+                                        </svg>
                                     @else
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
                                     @endif
                                 </button>
                             </div>
@@ -398,16 +422,19 @@
                             <div class="flex items-center gap-1">
                                 Account
 
-                                <button type="button" wire:click="sort('status')" class="text-gray-400 hover:text-gray-500">
+                                <button type="button" wire:click="sort('status')"
+                                    class="text-gray-400 hover:text-gray-500">
                                     @if($sortBy === 'status')
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                            stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 15l7-7 7 7" />
                                         </svg>
                                     @else
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                            stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
                                         </svg>
                                     @endif
                                 </button>
@@ -424,6 +451,9 @@
 
                 <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse ($this->employees as $employee)
+                        @include('livewire.admin.employees.modals.delete-employee')
+                        @include('livewire.admin.employees.modals.edit-employee')
+
                         <tr wire:key="employee-{{ $employee->id }}"
                             class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                             <!-- Staff ID -->
@@ -475,7 +505,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
 
 
-                                   {{ $employee->bank->name }}
+                                {{ $employee->bank->name }}
 
                             </td>
                             <!-- Account Number -->
@@ -489,22 +519,26 @@
                             <!-- Actions -->
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center space-x-2">
-                                    <button wire:click="editEmployee({{ $employee->id }})"
-                                        class="text-blue-600 hover:text-blue-900">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                        </svg>
-                                    </button>
-                                    <button wire:click="confirmDelete({{ $employee->id }})"
-                                        class="text-red-600 hover:text-red-900">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                    </button>
+                                    <flux:modal.trigger :name="'edit-employee-'.$employee->id">
+                                        <button wire:click="editEmployee({{ $employee->id }})"
+                                            class="text-blue-600 hover:text-blue-900">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </button>
+                                    </flux:modal.trigger>
+                                    <flux:modal.trigger :name="'delete-employee-'.$employee->id">
+                                        <button wire:click="confirmDelete({{ $employee->id }})"
+                                            class="text-red-600 hover:text-red-900">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </flux:modal.trigger>
                                 </div>
                             </td>
                         </tr>

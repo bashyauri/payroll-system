@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('deductions', function (Blueprint $table) {
+        Schema::create('deduction_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
-            $table->foreignId('deduction_type_id')->constrained()->onDelete('cascade');
-            $table->decimal('amount', 10, 2);
-            $table->text('note')->nullable();
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }
@@ -24,9 +21,8 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-
     public function down(): void
     {
-        Schema::dropIfExists('deductions');
+        Schema::dropIfExists('deduction_types');
     }
 };

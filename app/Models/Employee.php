@@ -35,6 +35,40 @@ class Employee extends Model
     {
         return $this->belongsTo(Position::class);
     }
+    public function allowances()
+    {
+        return $this->hasMany(Allowance::class);
+    }
+
+    public function bonuses()
+    {
+        return $this->hasMany(Bonus::class);
+    }
+    public function deductions()
+    {
+        return $this->hasMany(Deduction::class);
+    }
+
+    public function totalDeductions(): float
+    {
+        return $this->deductions->sum('amount');
+    }
+    public function totalAllowances(): float
+    {
+        return $this->allowances->sum('amount');
+    }
+
+    public function totalBonuses(): float
+    {
+        return $this->bonuses->sum('amount');
+    }
+
+    public function grossPay(): float
+    {
+        return $this->basic_salary + $this->totalAllowances() + $this->totalBonuses();
+    }
+
+
 
     public function bank()
     {

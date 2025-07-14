@@ -22,10 +22,18 @@
                 <flux:navlist.item icon="users" :href="route('admin.users')"
                     :current="request()->routeIs('admin.users')" wire:navigate>{{ __('Users') }}
                 </flux:navlist.item>
-                <flux:navlist.item icon="contact-round" :href="route('admin.employees')"
-                    :current="request()->routeIs('admin.employees')" wire:navigate>
-                    {{ __('Employees') }}
+
+            </flux:navlist.group>
+            <flux:navlist.group expandable heading="Employees" class="hidden lg:grid">
+                <flux:navlist.item :href="route('admin.employees')" :current="request()->routeIs('admin.employees')"
+                    wire:navigate>
+                    {{ __('Manage') }}
                 </flux:navlist.item>
+                <flux:navlist.item :href="route('admin.employees.deductions')"
+                    :current="request()->routeIs('admin.employees.deductions')" wire:navigate>
+                    {{ __('Deductions') }}
+                </flux:navlist.item>
+                <flux:navlist.item href="#">Brand guidelines</flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 

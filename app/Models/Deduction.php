@@ -13,7 +13,7 @@ class Deduction extends Model
     {
         return $this->belongsTo(DeductionType::class, 'deduction_type_id');
     }
-    protected $fillable = ['employee_id', 'type', 'amount', 'note'];
+    protected $fillable = ['employee_id', 'type', 'amount', 'deduction_type_id', 'note'];
 
     public function employee()
     {

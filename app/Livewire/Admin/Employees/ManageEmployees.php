@@ -46,6 +46,7 @@ class ManageEmployees extends Component
     public function rules()
     {
         $rules = [
+            'staff_id' => 'required|string|unique:employees,staff_id|size:4',
             'department_id' => 'required|exists:departments,id',
             'position_id' => 'required|exists:positions,id',
             'level' => 'required|string|max:10',

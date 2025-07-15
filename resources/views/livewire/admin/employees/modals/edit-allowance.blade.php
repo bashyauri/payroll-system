@@ -1,4 +1,4 @@
-<flux:modal :name="'edit-deduction-'.$deduction?->id" class="md:w-[800px]"
+<flux:modal :name="'edit-allowance-'.$allowance?->id" class="md:w-[800px]"
     overlay-class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
     wrapper-class="fixed inset-0 overflow-y-auto flex items-center justify-center min-h-screen p-4"
     dialog-class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl transition-all w-full max-w-2xl">
@@ -8,7 +8,7 @@
             <div>
                 <flux:heading size="lg">Edit User Profile</flux:heading>
                 <flux:text class="text-gray-600 dark:text-gray-400 mt-1">
-                    Update deduction for {{ $deduction->employee?->user->name }}
+                    Update deduction for {{ $allowance->employee?->user->name }}
                 </flux:text>
             </div>
         </div>
@@ -28,11 +28,11 @@
         <x-action-message
             class="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-200 px-4 py-3 rounded-md"
             on="deduction-updated">
-            {{ __('Deduction updated successfully!') }}
+            {{ __('Allowance updated successfully!') }}
         </x-action-message>
 
         <!-- Form Section -->
-        <form wire:submit.prevent="updateDeduction">
+        <form wire:submit.prevent="updateAllowance">
             <div class="space-y-4">
                 <!-- Employee Display -->
                 @if($selectedEmployee)
@@ -43,13 +43,13 @@
                 @endif
 
                 <!-- Deduction Type -->
-                <flux:select label="Deduction Type" wire:model.defer="deduction_type_id" required>
-                    <option value="">Select Deduction Type</option>
-                    @foreach ($deductionTypes as $type)
+                <flux:select label="Allowance Type" wire:model.defer="allowance_type_id" required>
+                    <option value="">Select Allowance Type</option>
+                    @foreach ($allowanceTypes as $type)
                         <option value="{{ $type->id }}">{{ $type->name }}</option>
                     @endforeach
                 </flux:select>
-                @error('deduction_type_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                @error('allowance_type_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
                 <!-- Amount -->
                 <flux:input type="number" label="Amount" wire:model.defer="amount" placeholder="e.g. 5000" />
@@ -71,7 +71,7 @@
                         Reset
                     </flux:button>
                     <flux:button variant="primary" type="submit" wire:loading.attr="disabled">
-                        <span wire:loading wire:target="updateDeduction">
+                        <span wire:loading wire:target="updateAllowance">
                             <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
@@ -82,7 +82,7 @@
                             </svg>
                             Saving...
                         </span>
-                        <span wire:loading.remove wire:target="updateDeduction">
+                        <span wire:loading.remove wire:target="updateAllowance">
                             Save Changes
                         </span>
                     </flux:button>

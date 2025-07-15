@@ -135,7 +135,7 @@ class Allowance extends Component
             $this->addError('save_error', 'Failed to create allowance: ' . $e->getMessage());
         }
     }
-    public function editDeduction(ModelsAllowance $allowance): void
+    public function editAllowance(ModelsAllowance $allowance): void
     {
         $this->editingAllowance = $allowance;
 

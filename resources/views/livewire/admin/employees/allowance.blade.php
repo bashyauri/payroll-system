@@ -300,8 +300,8 @@
 
                 <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse ($this->allowances as $allowance)
-                        {{-- @include('livewire.admin.employees.modals.edit-allowance')
-                        @include('livewire.admin.employees.modals.delete-allowance') --}}
+                        @include('livewire.admin.employees.modals.edit-allowance')
+                        @include('livewire.admin.employees.modals.delete-allowance')
                         <tr wire:key="allowance-{{ $allowance->id }}"
                             class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                             <!-- Employee Info -->

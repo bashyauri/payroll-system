@@ -13,7 +13,20 @@ return new class extends Migration
     {
         Schema::create('salaries', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
+
+            $table->year('year');
+            $table->string('month'); // e.g. 'July', or use integer (1–12)
+
+            $table->decimal('basic_salary', 10, 2);
+            $table->decimal('total_allowances', 10, 2)->default(0);
+            $table->decimal('total_deductions', 10, 2)->default(0);
+            $table->decimal('gross_pay', 10, 2);
+            $table->decimal('net_pay', 10, 2);
+
             $table->timestamps();
+
+            $table->unique(['employee_id', 'month', 'year']); // Prevent duplicate salary for same month/year
         });
     }
 

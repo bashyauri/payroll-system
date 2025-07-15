@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             BankSeeder::class,
             PositionSeeder::class,
             DeductionTypeSeeder::class,
+            AllowanceTypeSeeder::class,
         ]);
 
         // Seed 10 Nigerian-style staff users and employees

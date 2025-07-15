@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('allowances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
-            $table->string('type');
+            $table->foreignId('allowance_type_id')->constrained()->onDelete('cascade');
             $table->decimal('amount', 10, 2);
+            $table->text('note')->nullable();
             $table->timestamps();
+
+            $table->unique(['employee_id', 'allowance_type_id']); // ✅ Prevents duplicates
         });
     }
 

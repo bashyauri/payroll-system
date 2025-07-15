@@ -35,10 +35,7 @@ class Employee extends Model
     {
         return $this->belongsTo(Position::class);
     }
-    public function allowances()
-    {
-        return $this->hasMany(Allowance::class);
-    }
+
 
     public function bonuses()
     {
@@ -53,10 +50,7 @@ class Employee extends Model
     {
         return $this->deductions->sum('amount');
     }
-    public function totalAllowances(): float
-    {
-        return $this->allowances->sum('amount');
-    }
+
 
     public function totalBonuses(): float
     {
@@ -67,6 +61,16 @@ class Employee extends Model
     {
         return $this->basic_salary + $this->totalAllowances() + $this->totalBonuses();
     }
+    public function allowances()
+    {
+        return $this->hasMany(Allowance::class);
+    }
+
+    public function totalAllowances(): float
+    {
+        return $this->allowances->sum('amount');
+    }
+
 
 
 

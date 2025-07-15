@@ -33,6 +33,10 @@
                     :current="request()->routeIs('admin.employees.deductions')" wire:navigate>
                     {{ __('Deductions') }}
                 </flux:navlist.item>
+                <flux:navlist.item :href="route('admin.employees.allowances')"
+                    :current="request()->routeIs('admin.employees.allowances')" wire:navigate>
+                    {{ __('Allowances') }}
+                </flux:navlist.item>
                 <flux:navlist.item href="#">Brand guidelines</flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>

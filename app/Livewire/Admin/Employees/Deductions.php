@@ -128,7 +128,7 @@ class Deductions extends Component
             ]);
 
             $this->dispatch('deduction-added');
-            $this->dispatch('employee-added', name: $deduction->employee->user->name);
+            $this->dispatch('deduction-added', name: $deduction->employee->user->name);
             $this->resetForm();
             $this->dispatch('close-modal', name: 'add-deduction');
         } catch (\Exception $e) {

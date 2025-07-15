@@ -19,6 +19,7 @@
             on="employee-added">
             {{ __('Employee added successfully!') }}
         </x-action-message>
+        
 
         <div class="flex items-center gap-4">
             <!-- Search Input -->

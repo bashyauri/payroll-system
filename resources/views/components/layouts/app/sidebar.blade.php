@@ -37,7 +37,11 @@
                     :current="request()->routeIs('admin.employees.allowances')" wire:navigate>
                     {{ __('Allowances') }}
                 </flux:navlist.item>
-                <flux:navlist.item href="#">Brand guidelines</flux:navlist.item>
+                <flux:navlist.item :href="route('hr.employees.generate-slip')"
+                    :current="request()->routeIs('hr.employees.generate-slip')" wire:navigate>
+                    {{ __('Generate Slip') }}
+                </flux:navlist.item>
+
             </flux:navlist.group>
         </flux:navlist>
 

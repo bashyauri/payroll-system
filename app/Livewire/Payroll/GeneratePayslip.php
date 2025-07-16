@@ -2,9 +2,10 @@
 
 namespace App\Livewire\Payroll;
 
+use Flux\Flux;
+use App\Models\Salary;
 use Livewire\Component;
 use App\Models\Employee;
-use App\Models\Salary;
 use Illuminate\Support\Facades\Log;
 
 class GeneratePayslip extends Component
@@ -49,9 +50,12 @@ class GeneratePayslip extends Component
                     return $base + $allowances - $deductions;
                 }), 2)
         ];
+        $this->modal('preview-payslips')->show();
 
-        $this->showPreview = true;
+        // 👇 This is what opens the modal
+        $this->dispatch('open-modal', ['name' => 'preview-payslips']);
     }
+
 
     public function dryRun()
     {
@@ -98,9 +102,11 @@ class GeneratePayslip extends Component
 
         $this->dryRunIssues = $issues;
         $this->showDryRun = true;
+        $this->modal('dry-run-results')->show();
+
 
         if (empty($issues)) {
-            $this->dispatch('notify', [
+            $this->dispatch('dry-run-passed', [
                 'type' => 'success',
                 'title' => 'Dry Run Complete',
                 'message' => 'No issues detected in payroll data.'
@@ -113,44 +119,46 @@ class GeneratePayslip extends Component
         $this->validate();
         $this->showProgress = true;
 
-        $query = Employee::with(['position', 'allowances', 'deductions']);
-        $this->total = $query->count();
+        $employees = Employee::with(['position', 'allowances', 'deductions'])->get();
+        $this->total = $employees->count();
         $this->processed = 0;
 
-        // Process in chunks for better performance
-        $query->chunk(200, function ($chunk) {
-            foreach ($chunk as $employee) {
-                $base = $employee->position?->base_salary ?? 0;
-                $allowances = $employee->allowances->sum('amount');
-                $deductions = $employee->deductions->sum('amount');
-                $gross = $base + $allowances;
-                $net = $gross - $deductions;
+        foreach ($employees as $employee) {
+            $base = $employee->position?->base_salary ?? 0;
 
-                Salary::updateOrCreate(
-                    [
-                        'employee_id' => $employee->id,
-                        'month' => $this->month,
-                        'year' => $this->year,
-                    ],
-                    [
-                        'base_salary' => $base,
-                        'total_allowances' => $allowances,
-                        'total_deductions' => $deductions,
-                        'gross_pay' => $gross,
-                        'net_pay' => $net,
-                    ]
-                );
 
-                $this->processed++;
-            }
-        });
+            $allowances = $employee->allowances->sum('amount');
+            $deductions = $employee->deductions->sum('amount');
+            $gross = $base + $allowances;
+            $net = $gross - $deductions;
+
+            // Ensure all required fields are included
+            Salary::updateOrCreate(
+                [
+                    'employee_id' => $employee->id,
+                    'month' => $this->month,
+                    'year' => $this->year,
+                ],
+                [
+                    'base_salary' => $base, // Make sure this is included
+                    'total_allowances' => $allowances,
+                    'total_deductions' => $deductions,
+                    'gross_pay' => $gross,
+                    'net_pay' => $net,
+                ]
+            );
+
+            $this->processed++;
+        }
 
         $this->showProgress = false;
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'title' => 'Payslips Generated',
-            'message' => "Payslips for {$this->month} {$this->year} were successfully generated for {$this->total} employees."
-        ]);
+        $this->dispatch('payslips-generated');
+
+        session()->flash('success', "Payslips for {$this->month} {$this->year} generated.");
+    }
+    public function closeForm()
+    {
+        Flux::modals()->close();
     }
 
     public function render()

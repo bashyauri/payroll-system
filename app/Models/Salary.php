@@ -13,7 +13,7 @@ class Salary extends Model
         'employee_id',
         'year',
         'month',
-        'basic_salary',
+        'base_salary',
         'total_allowances',
         'total_deductions',
         'gross_pay',

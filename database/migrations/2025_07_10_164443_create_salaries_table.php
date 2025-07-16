@@ -18,7 +18,7 @@ return new class extends Migration
             $table->year('year');
             $table->string('month'); // e.g. 'July', or use integer (1–12)
 
-            $table->decimal('basic_salary', 10, 2);
+            $table->decimal('base_salary', 10, 2);
             $table->decimal('total_allowances', 10, 2)->default(0);
             $table->decimal('total_deductions', 10, 2)->default(0);
             $table->decimal('gross_pay', 10, 2);

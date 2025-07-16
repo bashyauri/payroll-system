@@ -1,4 +1,17 @@
 <div>
+
+    <x-action-message class="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-200 px-4 py-3 rounded-md"
+        on="dry-run-passed">
+        {{ __(' Payroll data validated successfully!') }}
+    </x-action-message>
+    <x-action-message class="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-200 px-4 py-3 rounded-md"
+        on="payslips-generated">
+        Payslips generated for {{ $month }} {{ $year }}!
+    </x-action-message>
+
+
+
+
     <!-- Confirmation Modal -->
     <div x-data="{ open: false }" x-show="open"
         @open-modal.window="if ($event.detail.name === 'confirm-generation') open = true"
@@ -67,13 +80,7 @@
         <div class="p-6">
             <div class="flex items-center justify-between mb-4">
                 <flux:heading size="lg">Payslip Preview</flux:heading>
-                <button @click="$dispatch('close-modal', { name: 'preview-payslips' })"
-                    class="text-gray-400 hover:text-gray-500">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+
             </div>
 
             <div class="space-y-4">
@@ -98,7 +105,7 @@
                 </div>
 
                 <div class="flex justify-end gap-3 pt-4">
-                    <flux:button variant="ghost" @click="$dispatch('close-modal', { name: 'preview-payslips' })">
+                    <flux:button variant="ghost" @click="$wire.closeForm()">
                         Close
                     </flux:button>
                     <flux:button variant="primary"
@@ -114,13 +121,13 @@
         <div class="p-6">
             <div class="flex items-center justify-between mb-4">
                 <flux:heading size="lg">Payroll Validation Results</flux:heading>
-                <button @click="$dispatch('close-modal', { name: 'dry-run-results' })"
+                {{-- <button @click="$dispatch('close-modal', { name: 'dry-run-results' })"
                     class="text-gray-400 hover:text-gray-500">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                </button>
+                </button> --}}
             </div>
 
             <div class="space-y-4">
@@ -171,7 +178,7 @@
                 @endif
 
                 <div class="flex justify-end gap-3 pt-4">
-                    <flux:button variant="ghost" @click="$dispatch('close-modal', { name: 'dry-run-results' })">
+                    <flux:button variant="ghost" @click="$wire.closeForm()">
                         Close
                     </flux:button>
                     @if(count($dryRunIssues) === 0)

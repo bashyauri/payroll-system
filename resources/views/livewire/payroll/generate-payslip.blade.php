@@ -4,10 +4,19 @@
         on="dry-run-passed">
         {{ __(' Payroll data validated successfully!') }}
     </x-action-message>
+    <x-action-message class="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-200 px-4 py-3 rounded-md"
+        on="dry-run-passed-error">
+        Error Occured
+    </x-action-message>
     <x-action-message class="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-200 px-4 py-3 rounded-md"
         on="payslips-generated">
         Payslips generated for {{ $month }} {{ $year }}!
     </x-action-message>
+    <x-action-message class="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-200 px-4 py-3 rounded-md"
+        on="preview-payslips-error">
+        Error Occured
+    </x-action-message>
+
 
 
 
@@ -108,8 +117,8 @@
                     <flux:button variant="ghost" @click="$wire.closeForm()">
                         Close
                     </flux:button>
-                    <flux:button variant="primary"
-                        @click="$dispatch('open-modal', { name: 'confirm-generation' }); $dispatch('close-modal', { name: 'preview-payslips' })">
+                    <flux:button variant="primary" x-on:click="$flux.modal('preview-payslips').close()"
+                        @click="$dispatch('open-modal', { name: 'confirm-generation' });">
                         Proceed to Generate
                     </flux:button>
                 </div>
@@ -182,8 +191,8 @@
                         Close
                     </flux:button>
                     @if(count($dryRunIssues) === 0)
-                        <flux:button variant="primary"
-                            @click="$dispatch('open-modal', { name: 'confirm-generation' }); $dispatch('close-modal', { name: 'dry-run-results' })">
+                        <flux:button variant="primary" x-on:click="$flux.modal('dry-run-results').close()"
+                            @click="$dispatch('open-modal', { name: 'confirm-generation' });">
                             Proceed to Generate
                         </flux:button>
                     @endif

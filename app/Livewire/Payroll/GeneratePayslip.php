@@ -7,9 +7,13 @@ use App\Models\Salary;
 use Livewire\Component;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Log;
+use App\Traits\DispatchesActionMessages;
+use Illuminate\Validation\ValidationException;
+use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 
 class GeneratePayslip extends Component
 {
+
     public string $month;
     public int $year;
     public int $processed = 0;
@@ -36,81 +40,102 @@ class GeneratePayslip extends Component
 
     public function preview()
     {
-        $this->validate();
+        try {
+            $this->validate();
 
-        $this->previewData = [
-            'employee_count' => Employee::count(),
-            'month_year' => "{$this->month} {$this->year}",
-            'estimated_payroll' => number_format(Employee::with(['position', 'allowances', 'deductions'])
-                ->get()
-                ->sum(function ($employee) {
-                    $base = $employee->position?->base_salary ?? 0;
-                    $allowances = $employee->allowances->sum('amount');
-                    $deductions = $employee->deductions->sum('amount');
-                    return $base + $allowances - $deductions;
-                }), 2)
-        ];
-        $this->modal('preview-payslips')->show();
+            $this->previewData = [
+                'employee_count' => Employee::count(),
+                'month_year' => "{$this->month} {$this->year}",
+                'estimated_payroll' => number_format(Employee::with(['position', 'allowances', 'deductions'])
+                    ->get()
+                    ->sum(function ($employee) {
+                        $base = $employee->position?->base_salary ?? 0;
+                        $allowances = $employee->allowances->sum('amount');
+                        $deductions = $employee->deductions->sum('amount');
+                        return $base + $allowances - $deductions;
+                    }), 2)
+            ];
 
-        // 👇 This is what opens the modal
-        $this->dispatch('open-modal', ['name' => 'preview-payslips']);
+            $this->modal('preview-payslips')->show();
+
+            // 👇 This is what opens the modal
+            $this->dispatch('open-modal', ['name' => 'preview-payslips']);
+        } catch (ValidationException $e) {
+            // Let Livewire handle it as usual
+            throw $e;
+        } catch (\Throwable $e) {
+            Log::error('Error in preview()', ['error' => $e]);
+            $this->dispatch('preview-payslips-error');
+
+            $this->dispatch('notify', [
+                'type' => 'danger',
+                'title' => 'Preview Failed',
+                'message' => 'An unexpected error occurred while preparing the preview.'
+            ]);
+        }
     }
-
 
     public function dryRun()
     {
-        $this->validate();
+        try {
+            $this->validate();
 
-        $issues = [];
+            $issues = [];
 
-        // Check for employees without positions
-        $noPosition = Employee::doesntHave('position')->count();
-        if ($noPosition > 0) {
-            $issues[] = [
-                'type' => 'warning',
-                'message' => "$noPosition employees without assigned positions",
-                'details' => Employee::doesntHave('position')
-                    ->get()
-                    ->pluck('user.name')
-                    ->toArray()
-            ];
-        }
+            // Employees without positions
+            $noPosition = Employee::doesntHave('position')->count();
+            if ($noPosition > 0) {
+                $issues[] = [
+                    'type' => 'warning',
+                    'message' => "$noPosition employees without assigned positions",
+                    'details' => Employee::doesntHave('position')
+                        ->get()
+                        ->pluck('user.name')
+                        ->toArray()
+                ];
+            }
 
-        // Check for negative net pay
-        $negativePayEmployees = Employee::with(['position', 'allowances', 'deductions', 'user'])
-            ->get()
-            ->filter(function ($employee) {
-                $base = $employee->position?->base_salary ?? 0;
-                $allowances = $employee->allowances->sum('amount');
-                $deductions = $employee->deductions->sum('amount');
-                return ($base + $allowances - $deductions) < 0;
-            });
-
-        if ($negativePayEmployees->count() > 0) {
-            $issues[] = [
-                'type' => 'danger',
-                'message' => $negativePayEmployees->count() . " employees with negative net pay",
-                'details' => $negativePayEmployees->map(function ($employee) {
+            // Employees with negative pay
+            $negativePayEmployees = Employee::with(['position', 'allowances', 'deductions', 'user'])
+                ->get()
+                ->filter(function ($employee) {
                     $base = $employee->position?->base_salary ?? 0;
                     $allowances = $employee->allowances->sum('amount');
                     $deductions = $employee->deductions->sum('amount');
-                    $net = $base + $allowances - $deductions;
-                    return "{$employee->user->name}: " . number_format($net, 2);
-                })->toArray()
-            ];
-        }
+                    return ($base + $allowances - $deductions) < 0;
+                });
 
-        $this->dryRunIssues = $issues;
-        $this->showDryRun = true;
-        $this->modal('dry-run-results')->show();
+            if ($negativePayEmployees->count() > 0) {
+                $issues[] = [
+                    'type' => 'danger',
+                    'message' => $negativePayEmployees->count() . " employees with negative net pay",
+                    'details' => $negativePayEmployees->map(function ($employee) {
+                        $base = $employee->position?->base_salary ?? 0;
+                        $allowances = $employee->allowances->sum('amount');
+                        $deductions = $employee->deductions->sum('amount');
+                        $net = $base + $allowances - $deductions;
+                        return "{$employee->user->name}: " . number_format($net, 2);
+                    })->toArray()
+                ];
+            }
 
+            $this->dryRunIssues = $issues;
+            $this->showDryRun = true;
+            $this->modal('dry-run-results')->show();
 
-        if (empty($issues)) {
-            $this->dispatch('dry-run-passed', [
-                'type' => 'success',
-                'title' => 'Dry Run Complete',
-                'message' => 'No issues detected in payroll data.'
-            ]);
+            if (empty($issues)) {
+
+                $this->dispatch('dry-run-passed', [
+                    'type' => 'success',
+                    'title' => 'Dry Run Complete',
+                    'message' => 'No issues detected in payroll data.'
+                ]);
+            }
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            Log::error('Error in dryRun()', ['error' => $e]);
+            $this->dispatch('dry-run-passed-error');
         }
     }
 
@@ -119,43 +144,63 @@ class GeneratePayslip extends Component
         $this->validate();
         $this->showProgress = true;
 
-        $employees = Employee::with(['position', 'allowances', 'deductions'])->get();
-        $this->total = $employees->count();
-        $this->processed = 0;
+        try {
+            $employees = Employee::with(['position', 'allowances', 'deductions'])->get();
+            $this->total = $employees->count();
+            $this->processed = 0;
 
-        foreach ($employees as $employee) {
-            $base = $employee->position?->base_salary ?? 0;
+            foreach ($employees as $employee) {
+                // Validate base salary
+                $base = max(0, $employee->position?->base_salary ?? 0);
 
+                // Ensure allowances and deductions are positive numbers
+                $allowances = max(0, $employee->allowances->sum('amount'));
+                $deductions = max(0, $employee->deductions->sum('amount'));
 
-            $allowances = $employee->allowances->sum('amount');
-            $deductions = $employee->deductions->sum('amount');
-            $gross = $base + $allowances;
-            $net = $gross - $deductions;
+                $gross = $base + $allowances;
+                $net = max(0, $gross - $deductions); // Prevent negative net pay
 
-            // Ensure all required fields are included
-            Salary::updateOrCreate(
-                [
-                    'employee_id' => $employee->id,
-                    'month' => $this->month,
-                    'year' => $this->year,
-                ],
-                [
-                    'base_salary' => $base, // Make sure this is included
-                    'total_allowances' => $allowances,
-                    'total_deductions' => $deductions,
-                    'gross_pay' => $gross,
-                    'net_pay' => $net,
-                ]
-            );
+                // Additional validation
+                if ($base <= 0) {
+                    Log::warning("Employee {$employee->id} has invalid base salary: {$base}");
+                    continue; // Skip or handle differently
+                }
 
-            $this->processed++;
+                Salary::updateOrCreate(
+                    [
+                        'employee_id' => $employee->id,
+                        'month' => $this->month,
+                        'year' => $this->year,
+                    ],
+                    [
+                        'base_salary' => $base,
+                        'total_allowances' => $allowances,
+                        'total_deductions' => $deductions,
+                        'gross_pay' => $gross,
+                        'net_pay' => $net,
+                    ]
+                );
+
+                $this->processed++;
+            }
+
+            $this->showProgress = false;
+            $this->dispatch('payslips-generated');
+
+            session()->flash('success', "Payslips for {$this->month} {$this->year} generated.");
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            Log::error('Error generating payslips', ['error' => $e]);
+            $this->showProgress = false;
+            $this->dispatch('payslips-generated', [
+                'type' => 'danger',
+                'title' => 'Generation Failed',
+                'message' => 'Something went wrong while generating payslips.'
+            ]);
         }
-
-        $this->showProgress = false;
-        $this->dispatch('payslips-generated');
-
-        session()->flash('success', "Payslips for {$this->month} {$this->year} generated.");
     }
+
     public function closeForm()
     {
         Flux::modals()->close();
@@ -164,22 +209,11 @@ class GeneratePayslip extends Component
     public function render()
     {
         return view('livewire.payroll.generate-payslip', [
-            'monthOptions' => [
-                ['value' => 'January', 'label' => 'January'],
-                ['value' => 'February', 'label' => 'February'],
-                ['value' => 'March', 'label' => 'March'],
-                ['value' => 'April', 'label' => 'April'],
-                ['value' => 'May', 'label' => 'May'],
-                ['value' => 'June', 'label' => 'June'],
-                ['value' => 'July', 'label' => 'July'],
-                ['value' => 'August', 'label' => 'August'],
-                ['value' => 'September', 'label' => 'September'],
-                ['value' => 'October', 'label' => 'October'],
-                ['value' => 'November', 'label' => 'November'],
-                ['value' => 'December', 'label' => 'December'],
-            ],
+            'monthOptions' => collect(range(1, 12))->map(fn($m) => [
+                'value' => date('F', mktime(0, 0, 0, $m, 1)),
+                'label' => date('F', mktime(0, 0, 0, $m, 1)),
+            ]),
             'currentYear' => date('Y'),
-
             'employeeCount' => Employee::count(),
         ]);
     }

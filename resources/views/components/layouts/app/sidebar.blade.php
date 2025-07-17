@@ -41,6 +41,10 @@
                     :current="request()->routeIs('hr.employees.generate-slip')" wire:navigate>
                     {{ __('Generate Slip') }}
                 </flux:navlist.item>
+                <flux:navlist.item :href="route('hr.employees.salaries')"
+                    :current="request()->routeIs('hr.employees.salaries')" wire:navigate>
+                    {{ __('Salaries') }}
+                </flux:navlist.item>
 
             </flux:navlist.group>
         </flux:navlist>

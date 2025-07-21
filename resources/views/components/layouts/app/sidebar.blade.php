@@ -18,35 +18,43 @@
                 <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
             </flux:navlist.group>
-            <flux:navlist.group :heading="__('Settings')" class="grid">
-                <flux:navlist.item icon="users" :href="route('admin.users')"
-                    :current="request()->routeIs('admin.users')" wire:navigate>{{ __('Users') }}
-                </flux:navlist.item>
+            @if(auth()->user()->hasRole('admin'))
+                <flux:navlist.group :heading="__('Settings')" class="grid">
+                    <flux:navlist.item icon="users" :href="route('admin.users')"
+                        :current="request()->routeIs('admin.users')" wire:navigate>{{ __('Users') }}
+                    </flux:navlist.item>
 
-            </flux:navlist.group>
-            <flux:navlist.group expandable heading="Employees" class="hidden lg:grid">
-                <flux:navlist.item :href="route('admin.employees')" :current="request()->routeIs('admin.employees')"
-                    wire:navigate>
-                    {{ __('Manage') }}
-                </flux:navlist.item>
-                <flux:navlist.item :href="route('admin.employees.deductions')"
-                    :current="request()->routeIs('admin.employees.deductions')" wire:navigate>
-                    {{ __('Deductions') }}
-                </flux:navlist.item>
-                <flux:navlist.item :href="route('admin.employees.allowances')"
-                    :current="request()->routeIs('admin.employees.allowances')" wire:navigate>
-                    {{ __('Allowances') }}
-                </flux:navlist.item>
-                <flux:navlist.item :href="route('hr.employees.generate-slip')"
-                    :current="request()->routeIs('hr.employees.generate-slip')" wire:navigate>
-                    {{ __('Generate Slip') }}
-                </flux:navlist.item>
-                <flux:navlist.item :href="route('hr.employees.salaries')"
-                    :current="request()->routeIs('hr.employees.salaries')" wire:navigate>
-                    {{ __('Salaries') }}
-                </flux:navlist.item>
+                </flux:navlist.group>
+                <flux:navlist.group expandable heading="Employees" class="hidden lg:grid">
+                    <flux:navlist.item :href="route('admin.employees')" :current="request()->routeIs('admin.employees')"
+                        wire:navigate>
+                        {{ __('Manage') }}
+                    </flux:navlist.item>
+                    <flux:navlist.item :href="route('admin.employees.deductions')"
+                        :current="request()->routeIs('admin.employees.deductions')" wire:navigate>
+                        {{ __('Deductions') }}
+                    </flux:navlist.item>
+                    <flux:navlist.item :href="route('admin.employees.allowances')"
+                        :current="request()->routeIs('admin.employees.allowances')" wire:navigate>
+                        {{ __('Allowances') }}
+                    </flux:navlist.item>
 
-            </flux:navlist.group>
+                </flux:navlist.group>
+            @endif
+            @if(auth()->user()->hasRole('hr'))
+                <flux:navlist.group expandable heading="Slip Generation" class="hidden lg:grid">
+                    <flux:navlist.item :href="route('hr.employees.generate-slip')"
+                        :current="request()->routeIs('hr.employees.generate-slip')" wire:navigate>
+                        {{ __('Generate Slip') }}
+                    </flux:navlist.item>
+
+
+                    <flux:navlist.item :href="route('hr.employees.salaries')"
+                        :current="request()->routeIs('hr.employees.salaries')" wire:navigate>
+                        {{ __('Salaries') }}
+                    </flux:navlist.item>
+                </flux:navlist.group>
+            @endif
         </flux:navlist>
 
 

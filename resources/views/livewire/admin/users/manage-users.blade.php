@@ -42,21 +42,20 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Left Column - Basic Information -->
                     <div class="space-y-4">
-                        <form wire:submit="saveUser">
+                        <form wire:submit.prevent="saveUser">
                             <flux:input label="Full Name" wire:model="name" placeholder="John Doe" class="w-full mb-4"
                                 icon="user" />
 
-                            <flux:input label="Email" name="email" wire:model="email" type="email"
-                                placeholder="john@example.com" class="w-full mb-4" icon="envelope" />
-                            <flux:select label="Status" wire:model="status" name="status" class="w-full mb-4"
-                                icon="status">
+                            <flux:input label="Email" wire:model="email" type="email" placeholder="john@example.com"
+                                class="w-full mb-4" icon="envelope" />
+                            <flux:select label="Status" wire:model="status" class="w-full mb-4" icon="status">
                                 <option value="">Select status</option>
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
                                 <option value="suspended">Suspended</option>
                             </flux:select>
 
-                            <flux:select label="Role" wire:model="role_id" class="w-full mb-4" icon="badge">
+                            <flux:select label="Role" wire:model.defer="role_id" class="w-full mb-4" icon="badge">
                                 <option value="">Select role</option>
                                 @foreach ($roles as $role)
                                     <option value="{{ $role->id }}">{{ strtoupper($role->name) }}</option>
@@ -68,19 +67,18 @@
 
                     <!-- Right Column - Employment Details -->
                     <div class="space-y-4">
-                        <flux:input label="Phone Number" wire:model="phone" type="tel" placeholder="+1 (555) 123-4567"
-                            class="w-full" icon="phone" />
+                        <flux:input label="Phone Number" wire:model.defer="phone" type="tel"
+                            placeholder="+1 (555) 123-4567" class="w-full" icon="phone" />
 
-                        <flux:select label="Department" name="department_name" wire:model="department_id" class="w-full"
-                            icon="building">
+                        <flux:select label="Department" wire:model.defer="department_id" class="w-full" icon="building">
                             <option value="">Select Department</option>
                             @foreach ($departments as $department)
                                 <option value="{{ $department->id }}">{{ strtoupper($department->name) }}</option>
                             @endforeach
                         </flux:select>
 
-                        <flux:input label="Password" wire:model="password" name="password" type="password"
-                            placeholder="••••••••" class="w-full pr-10" icon="lock" />
+                        <flux:input label="Password" wire:model="password" type="password" placeholder="••••••••"
+                            class="w-full pr-10" icon="lock" />
 
 
                         <!-- Password Confirmation -->
@@ -112,10 +110,10 @@
                         @click="document.getElementById('user-form').reset()">
                         Reset Form
                     </flux:button>
-                    <flux:button variant="primary" type="submit" class="cursor-pointer">
-                        Create User
+                    <flux:button variant="primary" type="submit" class="cursor-pointer" wire:loading.attr="disabled">
+                        <span wire:loading.remove>Create User</span>
+                        <span wire:loading>Saving...</span>
                     </flux:button>
-
                 </div>
             </div>
             </form>

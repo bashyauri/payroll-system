@@ -43,8 +43,8 @@
                     <!-- Left Column - Basic Information -->
                     <div class="space-y-4">
                         <form wire:submit.prevent="saveUser">
-                            <flux:input label="Full Name" wire:model="name" placeholder="John Doe" class="w-full mb-4"
-                                icon="user" />
+                            <flux:input label="Full Name" wire:model.live="name" placeholder="John Doe"
+                                class="w-full mb-4" icon="user" />
 
                             <flux:input label="Email" wire:model="email" type="email" placeholder="john@example.com"
                                 class="w-full mb-4" icon="envelope" />

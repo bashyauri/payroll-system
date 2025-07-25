@@ -3,10 +3,11 @@
         <!-- Modal header with unique close -->
         <div class="flex items-center justify-between mb-4">
             <flux:heading size="lg">Confirm Deletion</flux:heading>
-            <button @click="$dispatch('close-modal', { name: 'delete-user-'.$userToDelete->id })"
-                class="text-gray-400 hover:text-gray-500">
+            <button class="text-gray-400 hover:text-gray-500"
+                @click="$dispatch('close-modal', { name: 'delete-user-{{ $userToDelete?->id }}' })">
                 ✕
             </button>
+
         </div>
 
         <!-- Modal content -->
@@ -16,11 +17,12 @@
 
         <!-- Action buttons with proper closing -->
         <div class="flex justify-end gap-3 pt-4">
-            <flux:button variant="ghost" @click="$dispatch('close-modal', { name: 'delete-user-'.$userToDelete->id })">
+            <flux:button variant="ghost"
+                @click="$dispatch('close-modal', { name: 'delete-user-{{$userToDelete?->id}}' })">
                 Cancel
             </flux:button>
             <flux:button variant="danger" wire:click="deleteUser"
-                @click="$dispatch('close-modal', { name: 'delete-user-'.$userToDelete->id })">
+                @click="$dispatch('close-modal', { name: 'delete-user-{{$userToDelete?->id}}' })">
                 Confirm Delete
             </flux:button>
         </div>

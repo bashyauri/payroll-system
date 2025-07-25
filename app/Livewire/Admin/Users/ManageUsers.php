@@ -231,9 +231,6 @@ class ManageUsers extends Component
 
     public function render()
     {
-        return view('livewire.admin.users.manage-users', [
-            'roles' => $this->roles,
-            'departments' => $this->departments
-        ]);
+        return view('livewire.admin.users.manage-users');
     }
 }

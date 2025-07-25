@@ -29,25 +29,27 @@
         <!-- Rest of your existing modal code remains the same -->
 
         <flux:modal name="add-user" class="md:w-[800px]">
-            <div class="space-y-6">
-                <div>
-                    <flux:heading size="lg">Add New User</flux:heading>
-                    <flux:text class="mt-2 text-gray-600">Create a new user account with appropriate permissions
-                    </flux:text>
-                    <x-action-message class="me-3" on="user-added">
-                        {{ __('User Saved Successfully') }}
-                    </x-action-message>
-                </div>
+            <form wire:submit.prevent="saveUser" id="user-form">
+                <div class="space-y-6">
+                    <div>
+                        <flux:heading size="lg">Add New User</flux:heading>
+                        <flux:text class="mt-2 text-gray-600">
+                            Create a new user account with appropriate permissions
+                        </flux:text>
+                        <x-action-message class="me-3" on="user-added">
+                            {{ __('User Saved Successfully') }}
+                        </x-action-message>
+                    </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Left Column - Basic Information -->
-                    <div class="space-y-4">
-                        <form wire:submit.prevent="saveUser">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Left Column - Basic Information -->
+                        <div class="space-y-4">
                             <flux:input label="Full Name" wire:model.live="name" placeholder="John Doe"
                                 class="w-full mb-4" icon="user" />
 
                             <flux:input label="Email" wire:model="email" type="email" placeholder="john@example.com"
                                 class="w-full mb-4" icon="envelope" />
+
                             <flux:select label="Status" wire:model="status" class="w-full mb-4" icon="status">
                                 <option value="">Select status</option>
                                 <option value="active">Active</option>
@@ -61,63 +63,56 @@
                                     <option value="{{ $role->id }}">{{ strtoupper($role->name) }}</option>
                                 @endforeach
                             </flux:select>
+                        </div>
 
+                        <!-- Right Column - Employment Details -->
+                        <div class="space-y-4">
+                            <flux:input label="Phone Number" wire:model.defer="phone" type="tel"
+                                placeholder="+1 (555) 123-4567" class="w-full" icon="phone" />
 
+                            <flux:select label="Department" wire:model.defer="department_id" class="w-full"
+                                icon="building">
+                                <option value="">Select Department</option>
+                                @foreach ($departments as $department)
+                                    <option value="{{ $department->id }}">{{ strtoupper($department->name) }}</option>
+                                @endforeach
+                            </flux:select>
+
+                            <flux:input label="Password" wire:model="password" type="password" placeholder="••••••••"
+                                class="w-full pr-10" icon="lock" />
+
+                            <flux:input label="Confirm Password" wire:model="password_confirmation"
+                                name="password_confirmation" type="password" placeholder="••••••••" class="w-full"
+                                icon="lock" />
+                        </div>
                     </div>
 
-                    <!-- Right Column - Employment Details -->
-                    <div class="space-y-4">
-                        <flux:input label="Phone Number" wire:model.defer="phone" type="tel"
-                            placeholder="+1 (555) 123-4567" class="w-full" icon="phone" />
-
-                        <flux:select label="Department" wire:model.defer="department_id" class="w-full" icon="building">
-                            <option value="">Select Department</option>
-                            @foreach ($departments as $department)
-                                <option value="{{ $department->id }}">{{ strtoupper($department->name) }}</option>
-                            @endforeach
-                        </flux:select>
-
-                        <flux:input label="Password" wire:model="password" type="password" placeholder="••••••••"
-                            class="w-full pr-10" icon="lock" />
-
-
-                        <!-- Password Confirmation -->
-
-                        <flux:input label="Confirm Password" wire:model="password_confirmation"
-                            name="password_confirmation" type="password" placeholder="••••••••" class="w-full"
-                            icon="lock" />
-
-                    </div>
-                    <flux:text class="text-xs text-gray-500 mt-1">Password must be at least 8 characters long
+                    <flux:text class="text-xs text-gray-500 mt-1">
+                        Password must be at least 8 characters long
                     </flux:text>
 
-
-
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                        <flux:button variant="ghost" class="cursor-pointer" type="button"
+                            x-on:click="$flux.modal('add-user').close()">
+                            Cancel
+                        </flux:button>
+                        <div class="flex gap-3">
+                            <flux:button class="cursor-pointer" variant="outline" type="button"
+                                @click="document.getElementById('user-form').reset()">
+                                Reset Form
+                            </flux:button>
+                            <flux:button variant="primary" type="submit" class="cursor-pointer"
+                                wire:loading.attr="disabled">
+                                <span wire:loading.remove>Create User</span>
+                                <span wire:loading>Saving...</span>
+                            </flux:button>
+                        </div>
+                    </div>
                 </div>
-
-            </div>
-
-
-
-            <!-- Form Actions -->
-            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
-                <flux:button variant="ghost" class="cursor-pointer" type="button"
-                    x-on:click="$flux.modal('add-user').close()">
-                    Cancel
-                </flux:button>
-                <div class="flex gap-3">
-                    <flux:button class="cursor-pointer" variant="outline" type="button"
-                        @click="document.getElementById('user-form').reset()">
-                        Reset Form
-                    </flux:button>
-                    <flux:button variant="primary" type="submit" class="cursor-pointer" wire:loading.attr="disabled">
-                        <span wire:loading.remove>Create User</span>
-                        <span wire:loading>Saving...</span>
-                    </flux:button>
-                </div>
-            </div>
             </form>
         </flux:modal>
+
 
 
 

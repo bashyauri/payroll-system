@@ -17516,3 +17516,4 @@ Stack trace:
 #82 {main}
 "} 
 [2025-07-24 23:35:24] local.ERROR: User deletion failed: Attempt to read property "id" on null  
+[2025-07-25 00:24:58] local.ERROR: User deletion failed: Attempt to read property "id" on null  

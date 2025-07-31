@@ -253,7 +253,7 @@ class ManageEmployees extends Component
             $this->dispatch('close-modal', name: 'delete-employee-' . $this->employeeToDelete->id);
         } catch (Exception $e) {
             Log::error("Employee deletion failed: " . $e->getMessage());
-            $this->addError('delete', 'Failed to delete user. Please try again.');
+            $this->addError('delete', 'Failed to delete employee. Please try again.');
         }
     }
     public function closeForm()

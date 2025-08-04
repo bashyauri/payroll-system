@@ -400,7 +400,7 @@
             <div
                 class="bg-white dark:bg-gray-900 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6 rounded-b-lg">
                 <div class="flex-1 flex justify-between sm:hidden">
-                    @if($deductions->onFirstPage())
+                    @if($this->deductions->onFirstPage())
                         <span
                             class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-300 bg-white dark:bg-gray-800 cursor-not-allowed">
                             Previous

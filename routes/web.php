@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Payroll\PaySlip;
 use App\Livewire\Payroll\PayslipViewer;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
@@ -21,6 +22,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
     Route::get('payslips', PayslipViewer::class)->name('payslips.index');
+    Route::get('payslips/{salary}', PaySlip::class)->name('view-slip');
 });
 
 require __DIR__ . '/auth.php';

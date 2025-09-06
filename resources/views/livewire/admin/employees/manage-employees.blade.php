@@ -19,7 +19,7 @@
             on="employee-added">
             {{ __('Employee added successfully!') }}
         </x-action-message>
-        
+
 
         <div class="flex items-center gap-4">
             <!-- Search Input -->
@@ -630,8 +630,8 @@
                                 </button>
                             @endif
 
-                            @foreach($employees->getUrlRange(1, $employees->lastPage()) as $page => $url)
-                                @if($page == $employees->currentPage())
+                            @foreach($this->employees->getUrlRange(1, $this->employees->lastPage()) as $page => $url)
+                                @if($page == $this->employees?->currentPage())
                                     <span aria-current="page"
                                         class="relative inline-flex items-center px-4 py-2 border border-blue-500 text-sm font-medium text-blue-600 dark:text-blue-300 bg-blue-50 dark:bg-blue-900">
                                         {{ $page }}
@@ -644,7 +644,7 @@
                                 @endif
                             @endforeach
 
-                            @if($employees->hasMorePages())
+                            @if($this->employees->hasMorePages())
                                 <button wire:click="nextPage"
                                     class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <span class="sr-only">Next</span>

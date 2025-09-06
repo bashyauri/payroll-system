@@ -158,10 +158,10 @@
                                 {{ number_format($salary->net_pay, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="#"
+                                <a href="{{ route('view-slip',['salary' =>$salary]) }}"
                                     class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">View</a>
-                                <a href="#"
-                                    class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">Edit</a>
+                                {{-- <a href="#"
+                                    class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">Edit</a> --}}
                             </td>
                         </tr>
                     @empty
